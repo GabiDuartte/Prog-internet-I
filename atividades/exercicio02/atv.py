@@ -1,59 +1,107 @@
-import tempfile, os, hashlib, json,datetime, requests, unicodedata
-from bs4 import BeautifulSoup
-import pandas as pd
-import re
+import requests
+import requests_cache
+from bs4 import BeautifulSoup 
 
-class CacheRequest():
+requests_cache.install_cache() 
 
-    def __init__(self, life=1, cache=True):
-        self.cache = cache
-        self.life = life
-        self.VERSION = "1"
-        self.text = None
-    
-    def get(self, url):
-        PATH_TO_CACHE_FILE = os.path.join(tempfile.gettempdir(), hashlib.md5(url.encode()).hexdigest() + self.VERSION)
-
-        if(self.cache):
-            if os.path.exists(PATH_TO_CACHE_FILE):
-                buffer = json.loads(open(PATH_TO_CACHE_FILE, "r").read())
-
-                if(datetime.datetime.utcnow() < datetime.datetime.strptime(buffer["data"], '%Y-%m-%d %H:%M:%S')):
-                    self.text = buffer["html"]
-                    print("\033[92m[+]\033[0m Proveniente do Cache. ]]")
-                    return True
-        
-        page = requests.get(url)
-        page.encoding = "utf-8"
-        self.text = unicodedata.normalize(u'NFKD', page.text).encode('ascii', 'ignore').decode('utf-8')
-        print("\033[92m[+]\033[0m Proveniente do Request. ]]")
-
-        if (self.cache):
-            with open(PATH_TO_CACHE_FILE, 'w') as f:
-                f.write(json.dumps({"data": (datetime.datetime.utcnow() + datetime.timedelta(minutes=self.life)).strftime('%Y-%m-%d %H:%M:%S'), "html": self.text}))
-                f.close()
-                print("\033[92m[*]\033[0m Cache criado. ]]")
-        return True
-    
-
-c = CacheRequest (life=60)
-c = CacheRequest (life=60)
-url = 'https://lista.mercadolivre.com.br/'
-produto_nome = 'fone de ouvido'
-productlink = []
-for x in range(1,6):
-    if c.get(url + produto_nome):
-        site = BeautifulSoup(c.text,'html.parser')
-
-        productlist = site.find_all('div', {'class': 'andes-card andes-card--flat andes-card--default ui-search-result shops__cardStyles ui-search-result--core ui-search-result--advertisement andes-card--padding-default'})
-
-        for item in productlist:
-            titulo = item.find('h2', attrs={'class': 'ui-search-item__title shops__item-title'})
-
-            for link in item.find_all('a',href=True):
-                productlink.append([titulo.text,link['href']])
+paginas = [] 
+paginas_palavra = [] 
 
 
-prod = pd.DataFrame(productlink, columns=['Titulo', 'Link'])
-prod.to_excel('prod.xlsx', index=False)
-print(prod)
+def download(url):
+	response = ''
+	try:
+		response = requests.get(url)
+	except Exception as ex:
+		response = None
+	finally:
+		return response
+
+def _palavra_chave(keyword,pagina):
+	texto = ''
+	tamanho_keyword = len(keyword)
+
+	soup = BeautifulSoup(pagina.text,'html.parser')
+	page = soup.text
+
+	palavra = page.find(keyword)
+
+	if palavra < 0:
+		texto = None
+	elif palavra < 10:
+		texto = page[0:palavra+tamanho_keyword+10:1]
+	elif palavra > 10:
+		texto = page[palavra-10:palavra+tamanho_keyword+10:1]
+
+	return texto
+
+
+def verif_link(url,url_original):
+	if url != None:
+		if url.startswith('http://') or url.startswith('https://'):
+			return url
+		elif url.startswith('/'):
+			return url_original + url
+		else:
+			return url
+
+def _links(pagina,url,deth,keyword):
+	urls = [] 
+
+	soup = BeautifulSoup(pagina.text,'html.parser')
+
+	links = soup.find_all('a')
+	
+	for link in links:
+		if verif_link(link.get('href'),url) != None:
+			if deth > 0:
+				urls.append(verif_link(link.get('href'),url))
+
+				url = verif_link(link.get('href'),url)			
+				paginas.append({'Url':url,'Nivel':deth})
+
+	return urls
+
+def scrape(keyword,url,deth):
+	pagina = download(url)
+
+	if pagina != None:
+
+		if _palavra_chave(keyword,pagina) != None:
+			print('Link: %s' % url)
+			print('Trecho: %s' % _palavra_chave(keyword,pagina))
+			paginas_palavra.append(url)	
+		else:
+			print('Link: %s' % url)
+			print('Palavra não encontrada')
+
+		if deth > 0 :
+			urls = _links(pagina,url,deth,keyword)
+
+			for url in urls:
+				try:
+					scrape(keyword,url,deth-1)
+				except:
+					continue	
+
+	else:
+		print('Erro')
+
+
+def _paginas(keyword):
+	if len(paginas_palavra) > 0:
+		print('Paginas com a palavra %s' % keyword)
+		for pagina in paginas_palavra:
+			print(pagina)
+			
+	
+def main():
+	keyword = 'emprego'
+	url = 'https://g1.globo.com/'
+	deth = 1
+	scrape(keyword,url,deth)
+	_paginas(keyword)
+	
+
+if __name__ == '__main__':
+	main()
