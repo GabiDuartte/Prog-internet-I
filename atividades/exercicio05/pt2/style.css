@@ -10,9 +10,8 @@ body{
 h1{
     color: #D9CCC1;;
     background: #005eb0;
-    
     font-size: 3rem;
-    line-height: .5rem;
+    letter-spacing: .5rem;
     text-align: center;
 }
 
