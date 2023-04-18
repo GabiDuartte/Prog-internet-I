@@ -1,0 +1,7 @@
+4. Qual a diferença entre as propriedades textContent e innerHTML dos elementos HTML?
+Cite exemplos.
+
+Resposta:
+innerHTML consegue retornar o texto com as formatações juntamente com os elementos html.
+Já o textContent é responsável por retornar apenas o texto com as formatações, 
+sem os elementos html.
