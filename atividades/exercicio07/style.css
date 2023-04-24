@@ -1,0 +1,31 @@
+ul > li#id1{
+    list-style-type: "\1F30B";
+}
+
+ul > li#id2{
+    list-style-type: "\1F338";
+}
+
+ul > li#id3{
+    list-style-type: "\1F340";
+}
+
+ul > li#id4{
+    list-style-type: "\1F342";
+}
+
+ul > li#id5{
+    list-style-type: "\1F344";
+}
+
+ul > li#id7 {
+    list-style-image: url('img/placa-de-transito.png');
+}
+
+ul > li#id8{
+    list-style-image: url('img/placa-de-transito\ \(1\).png');
+}
+
+ul > li#id9{
+    list-style-image: url('img/sinal-de-transito.png');
+}
