@@ -1,0 +1,116 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+h2{
+    text-align: center;
+}
+
+p{
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.color-page{
+    background-color: #ddd;
+}
+
+.container-principal{
+    color: #777;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+
+#new-post{
+    width: 100%;
+    height: 100%;
+}
+#new-post form{
+    width: 38%;
+    position: relative;
+    float: left;
+    background-color: #fff;
+    padding: 2%;
+    min-height: 400px;
+}
+
+#new-post form label{
+    font-weight: bold;
+}
+
+#new-post form input{
+    max-width: 100%;
+    width: 99%;
+    height: 30px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border: solid rgba(0, 0, 255, 0.475) 1px;
+    padding-left: 1%;
+}
+
+#new-post form textarea{
+    max-width: 100%;
+    width: 99%;
+    border: solid rgba(0, 0, 255, 0.475) 1px;
+    padding-left: 1%;
+    min-height: 100px;
+}
+
+#new-post form button{
+    width: 30%;
+    height: auto;
+    cursor: pointer;
+    background-color: rgba(0, 0, 255, 0.475);
+    color: #fff;
+    font-size: 1.5em;
+    padding: 15px 0 15px 0;
+    margin-left: 35%;
+    margin-top: 1%;
+}
+
+footer{
+    width: 100%;
+    height: 18%;
+    background-color: rgba(0, 0, 255, 0.475);
+    color: #fff;
+    position: relative;
+    float: left;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+footer .footer-text{
+    width: 30%;
+    margin: 1%;
+    position: relative;
+    float: left;
+}
+
+footer .footer-text a{
+    color: #fff;
+}
+
+nav{
+    position: absolute;
+    right: 20px;
+    bottom: 0px;
+}
+
+nav ul li{
+    float: left;
+    color: #fff;
+    width: auto;
+    margin: 0.8em;
+    font-size: 1.5em;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    list-style: none;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #bbb;
+}
+
+nav ul li a:hover{
+    color: rgba(0, 0, 255, 0.475);
+}
